@@ -1,38 +1,56 @@
-.App {
-  text-align: center;
+/* src/App.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f0f0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Base App container */
+.app {
+  transition: background 0.5s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Weather background classes */
+.weather-bg.clear {
+  background: linear-gradient(to right, #fbd786, #f7797d); /* sunny */
+  color: #333;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.weather-bg.clouds {
+  background: linear-gradient(to right, #d7d2cc, #304352); /* cloudy */
+  color: #fff;
 }
 
-.App-link {
-  color: #61dafb;
+.weather-bg.rain {
+  background: linear-gradient(to right, #4e54c8, #8f94fb); /* rain */
+  color: #fff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.weather-bg.thunderstorm {
+  background: linear-gradient(to right, #283e51, #485563); /* thunder */
+  color: #fff;
+}
+
+.weather-bg.snow {
+  background: linear-gradient(to right, #e0eafc, #cfdef3); /* snow */
+  color: #333;
+}
+
+.weather-bg.mist,
+.weather-bg.drizzle {
+  background: linear-gradient(to right, #757f9a, #d7dde8); /* fog/mist */
+  color: #333;
+}
+
+/* Card inside dynamic bg */
+.weather-bg .MuiCard-root {
+  background-color: rgba(255, 255, 255, 0.85);
+  color: #000;
+}
+
+/* Optional: global button & input margin */
+.MuiTextField-root,
+.MuiButton-root {
+  margin-bottom: 0.5rem;
 }
