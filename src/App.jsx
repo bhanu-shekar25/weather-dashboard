@@ -1,5 +1,7 @@
-// src/App.jsx
+// App.jsx
 import React, { useState } from "react";
+import './weatherBackgrounds.css'; // ✅ Import your background styles
+
 import {
   Container,
   TextField,
@@ -9,10 +11,15 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
+
 import WeatherCard from "./components/WeatherCard";
 import ForecastCard from "./components/ForecastCard";
-import { getCurrentWeather, getForecast,getCurrentWeatherByCoords,
-  getForecastByCoords } from "./api";
+import {
+  getCurrentWeather,
+  getForecast,
+  getCurrentWeatherByCoords,
+  getForecastByCoords,
+} from "./api";
 import { groupForecastByDay } from "./utils";
 
 export default function App() {
@@ -20,7 +27,7 @@ export default function App() {
   const [weatherData, setWeatherData] = useState([]);
   const [forecastData, setForecastData] = useState({});
   const [favorites, setFavorites] = useState([]);
-  const [unit, setUnit] = useState("metric"); // 'imperial' = F
+  const [unit, setUnit] = useState("metric");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -37,11 +44,7 @@ export default function App() {
       async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          const weather = await getCurrentWeatherByCoords(
-            latitude,
-            longitude,
-            unit
-          );
+          const weather = await getCurrentWeatherByCoords(latitude, longitude, unit);
           const forecast = await getForecastByCoords(latitude, longitude, unit);
 
           setWeatherData((prev) => [...prev, weather]);
@@ -54,10 +57,8 @@ export default function App() {
         } finally {
           setLoading(false);
         }
-        console.log("Location:", latitude, longitude);
-
       },
-      (error) => {
+      () => {
         setError("Location permission denied or unavailable");
         setLoading(false);
       }
@@ -95,8 +96,6 @@ export default function App() {
   const toggleUnit = async () => {
     const newUnit = unit === "metric" ? "imperial" : "metric";
     setUnit(newUnit);
-
-    // Refetch weather and forecast data for all current cities
     setLoading(true);
     try {
       const updatedWeatherData = await Promise.all(
@@ -110,9 +109,7 @@ export default function App() {
       setWeatherData(updatedWeatherData.map((item) => item.weather));
       const newForecastData = {};
       updatedWeatherData.forEach((item) => {
-        newForecastData[item.weather.name] = groupForecastByDay(
-          item.forecast.list
-        );
+        newForecastData[item.weather.name] = groupForecastByDay(item.forecast.list);
       });
       setForecastData(newForecastData);
     } catch (err) {
@@ -140,7 +137,6 @@ export default function App() {
           <Button variant="outlined" onClick={handleGetCurrentLocation}>
             Use Current Location
           </Button>
-
           <Button variant="contained" onClick={handleAddCity}>
             Search
           </Button>
@@ -160,11 +156,7 @@ export default function App() {
             <Typography variant="h6">⭐ Favorite Cities</Typography>
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
               {favorites.map((fav) => (
-                <Button
-                  key={fav}
-                  onClick={() => setCity(fav)}
-                  variant="outlined"
-                >
+                <Button key={fav} onClick={() => setCity(fav)} variant="outlined">
                   {fav}
                 </Button>
               ))}
@@ -172,21 +164,25 @@ export default function App() {
           </Box>
         )}
 
-        {weatherData.map((weather, idx) => (
-          <Box
-            key={idx}
-            className={`weather-bg ${weather.weather[0].main.toLowerCase()}`}
-            sx={{ p: 2, mb: 4, borderRadius: 2 }}
-          >
-            <WeatherCard
-              weather={weather}
-              unit={unit}
-              onFavorite={() => handleFavorite(weather.name)}
-            />
-            <ForecastCard forecast={forecastData[weather.name]} unit={unit} />
-          </Box>
-        ))}
+        {weatherData.map((weather, idx) => {
+          const condition = weather.weather[0].main.toLowerCase();
+          return (
+            <Box
+              key={idx}
+              className={`weather-bg ${condition}`}
+              sx={{ p: 2, mb: 4, borderRadius: 2 }}
+            >
+              <WeatherCard
+                weather={weather}
+                unit={unit}
+                onFavorite={() => handleFavorite(weather.name)}
+              />
+              <ForecastCard forecast={forecastData[weather.name]} unit={unit} />
+            </Box>
+          );
+        })}
       </Container>
     </Box>
   );
 }
+

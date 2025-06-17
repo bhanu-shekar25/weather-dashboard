@@ -1,4 +1,3 @@
-// src/components/WeatherCard.jsx
 import React from 'react';
 import { Card, CardContent, Typography, IconButton, Box } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -18,7 +17,7 @@ const getEmoji = (main) => {
 
 const WeatherCard = ({ weather, unit, onFavorite }) => {
   const { name, weather: details, main, wind } = weather;
-  const { main: condition, description, } = details[0];
+  const { main: condition, description } = details[0];
   const temperature = Math.round(main.temp);
   const tempSymbol = unit === 'metric' ? '°C' : '°F';
   const emoji = getEmoji(condition);

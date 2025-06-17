@@ -1,0 +1,93 @@
+/* General style for weather container */
+.weather-bg {
+  position: relative;
+  padding: 24px !important;
+  border-radius: 16px;
+  color: white !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+/* Dark overlay for better text readability */
+.weather-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 0;
+  border-radius: 16px;
+}
+
+/* Ensure content is on top of the overlay */
+.weather-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* === Dynamic Backgrounds by Weather Condition === */
+
+.weather-bg.clear {
+  background: linear-gradient(to right, #fceabb, #f8b500); /* Sunny golden yellow */
+  color: #333;
+}
+
+.weather-bg.clouds {
+  background: linear-gradient(to right, #d7d2cc, #304352); /* Soft gray & blue */
+  color: #fff;
+}
+
+.weather-bg.rain {
+  background: linear-gradient(to right, #4b6cb7, #182848); /* Deep rainy blue */
+  color: #fff;
+}
+
+.weather-bg.drizzle {
+  background: linear-gradient(to right, #89f7fe, #66a6ff); /* Light rain – soft teal */
+  color: #333;
+}
+
+.weather-bg.thunderstorm {
+  background: linear-gradient(to right, #232526, #414345); /* Dark stormy */
+  color: #f1f1f1;
+}
+
+.weather-bg.snow {
+  background: linear-gradient(to right, #e6dada, #274046); /* Frosty white to deep blue */
+  color: #333;
+}
+
+.weather-bg.mist,
+.weather-bg.haze,
+.weather-bg.fog {
+  background: linear-gradient(to right, #757f9a, #d7dde8); /* Foggy grayscale */
+  color: #222;
+}
+
+.weather-bg.smoke {
+  background: linear-gradient(to right, #434343, #000000); /* Dark smoky */
+  color: #fefefe;
+}
+
+.weather-bg.dust,
+.weather-bg.sand {
+  background: linear-gradient(to right, #ba8b02, #181818); /* Earthy tones */
+  color: #fff;
+}
+
+.weather-bg.tornado {
+  background: linear-gradient(to right, #3e5151, #decba4); /* Tornado brown/gray */
+  color: #fff;
+}
+
+.weather-bg.squall {
+  background: linear-gradient(to right, #bdc3c7, #2c3e50); /* Windy storm look */
+  color: #fff;
+}
+
+/* Optional: fallback style for unknown weather */
+.weather-bg.default {
+  background-image: url("https://source.unsplash.com/1600x900/?weather") !important;
+}

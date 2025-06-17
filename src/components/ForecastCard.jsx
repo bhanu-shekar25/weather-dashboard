@@ -1,4 +1,3 @@
-// src/components/ForecastCard.jsx
 import React from 'react';
 import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
 
@@ -19,7 +18,7 @@ const ForecastCard = ({ forecast, unit }) => {
   if (!forecast || typeof forecast !== 'object') return null;
 
   const tempSymbol = unit === 'metric' ? '°C' : '°F';
-  const dailyForecasts = Object.values(forecast).slice(0, 5); // Limit to 5 days
+  const dailyForecasts = Object.values(forecast).slice(0, 5);
 
   return (
     <Box sx={{ mt: 2 }}>
