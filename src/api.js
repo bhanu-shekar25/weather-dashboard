@@ -35,3 +35,18 @@ export const getForecast = async (city, unit = 'metric') => {
     throw error;
   }
 };
+
+export const getCurrentWeatherByCoords = async (lat, lon, unit) => {
+  const res = await axios.get(
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${unit}&appid=${API_KEY}`
+  );
+  return res.data;
+};
+
+export const getForecastByCoords = async (lat, lon, unit) => {
+  const res = await axios.get(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=${unit}&appid=${API_KEY}`
+  );
+  return res.data;
+};
+
