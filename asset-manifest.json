@@ -1,10 +1,13 @@
 {
   "files": {
-    "main.js": "/weather-dashboard/static/js/main.6cc25a8e.js",
+    "main.css": "/weather-dashboard/static/css/main.b53483e1.css",
+    "main.js": "/weather-dashboard/static/js/main.6611a418.js",
     "index.html": "/weather-dashboard/index.html",
-    "main.6cc25a8e.js.map": "/weather-dashboard/static/js/main.6cc25a8e.js.map"
+    "main.b53483e1.css.map": "/weather-dashboard/static/css/main.b53483e1.css.map",
+    "main.6611a418.js.map": "/weather-dashboard/static/js/main.6611a418.js.map"
   },
   "entrypoints": [
-    "static/js/main.6cc25a8e.js"
+    "static/css/main.b53483e1.css",
+    "static/js/main.6611a418.js"
   ]
 }
