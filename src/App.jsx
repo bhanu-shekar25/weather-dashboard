@@ -4,21 +4,23 @@ import './weatherBackgrounds.css'; // ✅ Import your background styles
 
 import {
   Container,
-  TextField,
-  Button,
-  Typography,
-  Switch,
   CircularProgress,
   Box,
 } from "@mui/material";
 
+import Header from "./components/Header";
+import Controls from "./components/Controls";
 import WeatherCard from "./components/WeatherCard";
 import ForecastCard from "./components/ForecastCard";
+import WeatherMap from "./components/WeatherMap";
+import ExportButton from "./components/ExportButton";
+import HistoricalWeather from "./components/HistoricalWeather";
 import {
   getCurrentWeather,
   getForecast,
   getCurrentWeatherByCoords,
   getForecastByCoords,
+  getHistoricalWeather,
 } from "./api";
 import { groupForecastByDay } from "./utils";
 
@@ -32,37 +34,33 @@ export default function App() {
   const [error, setError] = useState("");
 
   const handleGetCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const weather = await getCurrentWeatherByCoords(latitude, longitude, unit);
-          const forecast = await getForecastByCoords(latitude, longitude, unit);
-
-          setWeatherData((prev) => [...prev, weather]);
-          setForecastData((prev) => ({
-            ...prev,
-            [weather.name]: groupForecastByDay(forecast.list),
-          }));
-        } catch (err) {
-          setError("Failed to fetch weather for current location");
-        } finally {
+    if (navigator.geolocation) {
+      setLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const weather = await getCurrentWeatherByCoords(latitude, longitude, unit);
+            const forecast = await getForecastByCoords(latitude, longitude, unit);
+            setWeatherData((prev) => [...prev, weather]);
+            setForecastData((prev) => ({
+              ...prev,
+              [weather.name]: groupForecastByDay(forecast.list),
+            }));
+          } catch (err) {
+            setError("Could not fetch weather for your location.");
+          } finally {
+            setLoading(false);
+          }
+        },
+        () => {
+          setError("Geolocation permission denied.");
           setLoading(false);
         }
-      },
-      () => {
-        setError("Location permission denied or unavailable");
-        setLoading(false);
-      }
-    );
+      );
+    } else {
+      setError("Geolocation is not supported by this browser.");
+    }
   };
 
   const handleAddCity = async () => {
@@ -122,53 +120,29 @@ export default function App() {
   return (
     <Box className="app" sx={{ minHeight: "100vh", p: 2 }}>
       <Container>
-        <Typography variant="h4" gutterBottom>
-          🌦 Weather Dashboard
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-          <TextField
-            label="Enter City"
-            variant="outlined"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            fullWidth
-          />
-          <Button variant="outlined" onClick={handleGetCurrentLocation}>
-            Use Current Location
-          </Button>
-          <Button variant="contained" onClick={handleAddCity}>
-            Search
-          </Button>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-          <Typography variant="body1">°C</Typography>
-          <Switch onChange={toggleUnit} checked={unit === "imperial"} />
-          <Typography variant="body1">°F</Typography>
-        </Box>
+        <Header
+          city={city}
+          setCity={setCity}
+          handleAddCity={handleAddCity}
+          handleGetCurrentLocation={handleGetCurrentLocation}
+        />
+        <Controls
+          unit={unit}
+          toggleUnit={toggleUnit}
+          favorites={favorites}
+          setCity={setCity}
+        />
 
         {loading && <CircularProgress />}
         {error && <Typography color="error">{error}</Typography>}
 
-        {favorites.length > 0 && (
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="h6">⭐ Favorite Cities</Typography>
-            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-              {favorites.map((fav) => (
-                <Button key={fav} onClick={() => setCity(fav)} variant="outlined">
-                  {fav}
-                </Button>
-              ))}
-            </Box>
-          </Box>
-        )}
-
         {weatherData.map((weather, idx) => {
           const condition = weather.weather[0].main.toLowerCase();
+          const elementId = `weather-card-${idx}`;
           return (
             <Box
               key={idx}
+              id={elementId}
               className={`weather-bg ${condition}`}
               sx={{ p: 2, mb: 4, borderRadius: 2 }}
             >
@@ -178,6 +152,9 @@ export default function App() {
                 onFavorite={() => handleFavorite(weather.name)}
               />
               <ForecastCard forecast={forecastData[weather.name]} unit={unit} />
+              <WeatherMap lat={weather.coord.lat} lon={weather.coord.lon} />
+              <HistoricalWeather lat={weather.coord.lat} lon={weather.coord.lon} unit={unit} />
+              <ExportButton elementId={elementId} fileName={`${weather.name}-weather-report.pdf`} />
             </Box>
           );
         })}
